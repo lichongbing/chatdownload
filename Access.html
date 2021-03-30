@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="kiftd,java开源网盘">
+		<meta name="baidu-site-verification" content="wM6UlfaFy9" />
+		<!-- 上述4个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+		<title>kiftd程序接入...</title>
+		<link rel="icon" type="image/x-icon" href="img/icon.png" />
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="css/carousel.css" />
+		<!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+		<!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+		<!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.min.js"></script>
+      <script>
+      	alert("提示：浏览器版本过低。请使用一款现代浏览器访问（例如Chrome或FireFox等），如使用国产高速浏览器，请切换为“极速模式”。");
+      </script>
+    <![endif]-->
+		<style>
+			.banner {
+				background-size: contain;
+				background-position: center;
+				background-repeat: no-repeat;
+			}
+			
+			.panel {
+				background-color: rgba(26, 5, 88, 0.5);
+			}
+			
+			#mainbody p {
+				font-size: 17px;
+				line-height: 32px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<nav class="navbar navbar-inverse" style="margin-bottom: 0px;">
+			<div class="container">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="index.html">kiftd——青阳网络文件传输系统</a>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li class="active">
+							<p class="navbar-text">一款面向个人、团队、小型组织的网盘服务器系统</p>
+						</li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li class="active">
+							<p class="navbar-text">快速访问：</p>
+						</li>
+						<li>
+							<a href="https://github.com/KOHGYLW/kiftd" target="_blank">GitHub</a>
+						</li>
+						<li>
+							<a href="https://code.aliyun.com/kohgylw/kiftd/tree/master" target="_blank">阿里云</a>
+						</li>
+						<li>
+							<a href='https://gitee.com/kohgylw/kiftd' target="_blank">
+								<img height="20" src='https://gitee.com/kohgylw/kiftd/widgets/widget_5.svg' alt='Fork me on Gitee'></img>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<div class="jumbotron" style='background-image: linear-gradient(0deg, #5D478B,#5CACEE);'>
+			<div class="container" style="text-align: center;color: #FFFFFF;">
+				<h1>程序接入</h1>
+				<p>您是否希望将程序运行中生成的文件（例如运行日志、爬虫结果、流量报告、备份文件等）自动发布至网络，以供其他用户能够随时随地下载？或是希望在自己开发的办公系统中提供一个工作资料存储功能？除了从零实现一个文件分享平台外，kiftd也许能为您提供另外一种可能。</p>
+			</div>
+		</div>
+
+		<div class="container marketing">
+
+			<h1>目录</h1>
+
+			<ul>
+				<li>
+					<h2><a href="#t1">1. 准备工作</a></h2>
+					<ul>
+						<li>
+							<a href="#t1_1">1.1. 部署kiftd</a>
+						</li>
+					</ul>
+					<h2><a href="#t2">2. 在程序中控制kiftd启动</a></h2>
+					<ul>
+						<li>
+							<a href="#t2_1">2.1. 以独立进程方式启动kiftd</a>
+						</li>
+						<li>
+							<a href="#t2_2">2.2. 关闭kiftd服务器引擎或终止kiftd运行</a>
+						</li>
+						<li>
+							<a href="#t2_3">2.3. 监听kiftd运行状态</a>
+						</li>
+					</ul>
+					<h2><a href="#t3">3. 操作文件系统</a></h2>
+					<ul>
+						<li>
+							<a href="#t3_1">3.1. 进入文件管理模式</a>
+						</li>
+						<li>
+							<a href="#t3_2">3.2. 切换目录</a>
+						</li>
+						<li>
+							<a href="#t3_3">3.3. 导入、导出及删除文件或文件夹</a>
+						</li>
+						<li>
+							<a href="#t3_4">3.4. 退出文件管理模式</a>
+						</li>
+					</ul>
+					<h2><a href="#t4">4. 动态添加、修改及删除用户账户</a></h2>
+					<ul>
+						<li>
+							<a href="#t4_1">4.1. 通过修改配置文件进行账户配置</a>
+						</li>
+					</ul>
+					<h2><a href="#t5">5. 修改kiftd服务器设置项</a></h2>
+					<ul>
+						<li>
+							<a href="#t5_1">5.1. 通过修改配置文件进行服务器配置</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			
+			<div id="mainbody">
+
+			<hr class="featurette-divider">
+
+			<h1 id="t1">1. 准备工作</h1>
+			<h3 id="t1_1">1.1. 部署kiftd</h3>
+			<p>
+				本文将介绍如何通过进程间通信的方式将kiftd作为一个独立进程与您的Java项目进行接入。这种接入方式的优点是操作简单、可以将kiftd作为一个可选模块接入、最大程度地避免代码侵入并保证程序之间的独立性，比较适合对并发量需求不高并需要快速实现接入的项目（若您的项目并发量较大或需要更好的控制灵活性，推荐使用kiftd的源代码进行代码级的整合接入）。
+			</p>
+			<p>
+				首先，您需要将kiftd安装至您的硬盘中（安装流程与正常使用无任何区别）。此外，您还必须确保jdk中的bin文件夹已经被正确加入至环境变量PATH中。为了验证该环境变量配置正确，请在命令提示符（cmd）或终端（Shell）中执行如下命令：
+				<br />
+				<code>java -version</code><br /> 如果环境变量PATH的配置正确，那么您将看到类似如下内容的输出（以Oracle JDK 1.8.0_131为例）：
+			</p>
+			<pre>
+java version "1.8.0_131"
+Java(TM) SE Runtime Environment (build 1.8.0_131-b11)
+Java HotSpot(TM) 64-Bit Server VM (build 25.131-b11, mixed mode)
+				</pre>
+			<p>
+				请注意：kiftd的运行环境要求为 <strong>JDK 1.8 或 Java 8及以上</strong> 版本，不支持更早的版本。此外，请勿将kiftd安装至包含中文的路径下。
+			</p>
+			<p>完成上述步骤后，您应该尝试启动kiftd以确保其能够运行。测试完毕后需 <strong>退出程序</strong> ，避免与接下来的操作发生冲突。</p>
+			<p>特别提示：请确保kiftd使用的端口号与您的程序本身或是其他正在运行的服务均不冲突。例如：如果您使用了Apache Tomcat，其端口号为8080，那么kiftd的端口号需换用其他端口。</p>
+
+			<hr class="featurette-divider">
+
+			<h1 id="t2">2. 在程序中控制kiftd启动</h1>
+			<h3 id="t2_1">2.1. 以独立进程方式启动kiftd</h3>
+			<p>
+				控制kiftd的最基本示例便是能使用代码来启动它。
+				要实现这一功能，可以借助java自带的执行系统命令和进程通信功能。
+			</p>
+			<p>
+				示例：使用java.lang.Runtime工具可得到操作系统的运行环境，并以开启独立进程的方式启动kiftd：
+			</p>
+			<pre>
+try {
+	//...
+	Process process = Runtime.getRuntime().exec("java -jar {kiftd主程序的完整路径} -console");
+	//...
+} catch (Exception e) {
+	//...
+}
+			</pre>
+			<p>
+				其中， <code>{kiftd主程序的完整路径}</code> 处必须填写您的kiftd中jar程序的完整路径（例如“D:\\Programs\\kiftd-master\\kiftd-1.0.17-RELEASE.jar”）。
+			</p>
+			<p>
+				执行上述代码后，kiftd将进行文件系统初始化、配置文件生成、文件系统校对等准备工作，但并不会开启服务器引擎。接下来，您还需要使用该进程返回的java.lang.Process对象获得该进程的输出流，向其发送“开启服务器”指令：
+			</p>
+			<pre>
+//...
+PrintWriter writer = new PrintWriter(process.getOutputStream());//使用process对象得到输出流并生成一个PrintWriter。
+writer.println("-start");//向kiftd发送启动服务器指令
+writer.flush();
+//...
+			</pre>
+			<p>上述两步执行完毕后，kiftd将开启服务器引擎并提供访问。您可以打开浏览器，访问<code>http://127.0.0.1:{kiftd端口号}/</code>进行测试。</p>
+			<h3 id="t2_2">2.2. 关闭kiftd服务器引擎或终止kiftd运行</h3>
+			<p>
+				当您需要关闭kiftd服务器引擎并停止所有访问时，请向其发送“关闭服务器引擎”指令：
+			</p>
+			<pre>
+//...
+writer.println("-stop");
+writer.flush();
+//...
+			</pre>
+			<p>当然，您也可以直接向其发送“退出”指令来彻底结束kiftd的进程：</p>
+			<pre>
+//...
+writer.println("-exit");
+writer.flush();
+//...
+			</pre>
+			<h3 id="t2_3">2.3. 监听kiftd运行状态</h3>
+			<p>
+				监听kiftd的运行状态对于接入kiftd而言也十分重要，你可以通过kiftd进程的Proceess对象获得一个输入流，并转换为一个BufferedReader：
+			</p>
+			<code>
+BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			</code>
+			<p>
+				接下来，通过BufferedReader对象读取kiftd进程返回的信息，这些信息会以字符串类型返回并可通过如下方法读取：
+			</p>
+			<code>
+reader.readLine();
+			</code>
+			<p>
+				kiftd的进程在运行中会不定时地返回一些信息。因此，正确的做法是开启一个独立的线程来循环监听返回信息。示例如下：
+			</p>
+			<pre>
+try {
+	//...
+	Process process = Runtime.getRuntime().exec("java -jar {kiftd主程序的完整路径} -console");
+	//以独立的线程实时监控该进程输出信息
+	Thread t = new Thread(() -> {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		String line = null;
+		try {
+			while ((line = reader.readLine()) != null) {
+				System.out.println(line);//实时打印进程的返回信息，您可以根据这个信息判断kiftd的运行状态
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	});
+	t.start();
+	//...
+} catch (Exception e) {
+	//...
+}
+			</pre>
+			<p>
+				上述示例运行后，您会在控制台内打印类似于下列内容的信息：
+			</p>
+			<pre>
+[2019年04月11日 17:00:28] 青阳网络文件系统-kiftd 控制台模式[Console model]
+
+[2019年04月11日 17:00:28]Character encoding with UTF-8
+
+[2019年04月11日 17:00:28]正在初始化服务器...
+
+[2019年04月11日 17:00:28]正在载入配置文件...
+
+[2019年04月11日 17:00:28]配置文件载入完毕。正在检查配置...
+
+[2019年04月11日 17:00:28]正在检查服务器配置...
+
+[2019年04月11日 17:00:28]检查完毕。
+
+[2019年04月11日 17:00:28]准备就绪。
+
+命令帮助：
+kiftd:您可以输入以下指令以控制服务器：
+-start 启动服务器
+-stop 停止服务器
+-exit 停止服务器并退出应用
+-restart 重启服务器
+-files 文件管理
+-status 查看服务器状态
+-help 显示帮助文本
+			</pre>
+			<p>
+				您可以通过kiftd进程返回的信息内容实现对其运行状态的监听，并进行相应的处理。
+			</p>
+
+			<hr class="featurette-divider">
+
+			<h1 id="t3">3. 操作文件系统</h1>
+			<p>
+				实现对kiftd内部文件的控制是一个重要内容。实际上，操作kiftd的文件系统很简单：只需根据《kiftd说明文档》中“使用命令进行本地文件管理”一章提供的命令进行文件及文件夹的导入、导出和删除即可。本节将对涉及到的内容提供具体示例代码，以供参考。
+			</p>
+			<p>
+				注意：下列操作均应在一个线程中进行，因为这些操作不保证线程安全。
+			</p>
+			<h3 id="t3_1">3.1. 进入文件管理模式</h3>
+			<p>
+				操作文件系统必须将kiftd的命令模式切换至“文件管理模式”。方法如下：
+			</p>
+			<pre>
+//...
+writer.println("-files");
+writer.flush();
+//...
+			</pre>
+			<h3 id="t3_2">3.2. 切换目录</h3>
+			<p>无论是进行导入、导出还是删除操作，均只能针对当前所在的目录进行。在进入“文件管理模式”后，默认会进入“/ROOT”目录，您也可以使用目录切换命令进入其他目录。方法如下：</p>
+			<pre>
+//...
+writer.println("cd {要进入的目录名称}");
+writer.flush();
+//...
+			</pre>
+			<p>
+				与Unix/Linux操作系统中提供的cd命令不同，该命令不支持跨路径切换。示例：当您需要切换至“/ROOT/docs/2018_01/”目录时，必须发送两次切换目录指令：“cd docs”、“cd 2018_01”，而不能直接发送“cd docs/2018_01”。
+			</p>
+			<p>
+				如需返回上一级，请使用“cd ../”或“cd ..”。
+			</p>
+			<p>
+				如需获取当前目录的内容，请发送“ls”指令并通过<a href="#t2_3">监听kiftd运行状态</a>的方式得到返回结果。
+			</p>
+			<h3 id="t3_3">3.3. 导入、导出及删除文件或文件夹</h3>
+			<p>1，将本地硬盘中的文件或文件夹导入至当前目录内：</p>
+			<pre>
+//...
+writer.println("import {要导入的文件或文件夹的完整路径}");
+writer.flush();
+//...
+			</pre>
+			<p>其中，<code>{要导入的文件或文件夹的完整路径}</code> 处必须使用目标文件或文件夹的完整路径，例如“D:\\output\\”或“/home/myaccount/docs/log1001.txt”。</p>
+			<p>值得注意的是：kiftd并未提供创建文件夹的指令。如需在kiftd中创建文件夹，只需在本地创建好文件夹，并在其中存入相应的文件后再进行导入即可（实际上，导入空的文件夹并无意义）。</p>
+			<p>2，将kiftd中的文件或文件夹导出至本地硬盘中：</p>
+			<pre>
+//...
+writer.println("export {要导出的文件或文件夹名称} {存放文件夹的完整路径}");
+writer.flush();
+//...
+			</pre>
+			<p>需要注意的是：<code>{存放文件夹的完整路径}</code> 必须已经存在，且是一个具备写权限的文件夹。若存放文件夹不存在，则kiftd会终止导出操作。</p>
+			
+			<p>3，删除kiftd中的文件或文件夹：</p>
+			<pre>
+//...
+writer.println("rm {要删除的文件或文件夹名称}");
+writer.flush();
+//...
+			</pre>
+			
+			<h3 id="t3_4">3.4. 退出文件管理模式</h3>
+			<p>
+				如需退出“文件管理模式”并回到kiftd的命令模式，请向kiftd进程发送“退出文件管理模式”指令：
+			</p>
+			<pre>
+//...
+writer.println("exit");
+writer.flush();
+//...
+			</pre>
+			
+			<h1 id="t4">4. 动态添加、修改及删除用户账户</h1>
+			<h3 id="t4_1">4.1. 通过修改配置文件进行账户配置</h3>
+			<p>
+				除了基本的文件操作外，kiftd也支持动态修改账户设置。事实上，由于kiftd的账户信息是使用.properties进行文件存储的，因此您可以直接通过java自带的Properties工具类对其进行解析。
+			</p>
+			<p>
+				示例：获取kiftd中admin账户的密码：
+			</p>
+			<pre>
+try {
+	//...
+	Properties account=new Properties();
+	account.load(new FileInputStream(new File("{kiftd主目录下conf文件夹的完整路径}", "account.properties")));
+	String pwd=account.getProperty("admin.pwd");//该字符串即为密码
+	//...
+} catch (Exception e) {
+	//...
+}
+			</pre>
+			<p>同理，也可以使用下列方法对admin账户的密码进行修改，并更新至账户设置文件中：</p>
+			<pre>
+account.setProperty("admin.pwd", "{新密码}");
+account.store(new FileOutputStream(new File("{kiftd主目录下conf文件夹的完整路径}", "account.properties")),"{注释内容}");
+			</pre>
+			<p>删除账户和增加账户的操作均与此类似，相应的配置方式可参见《kiftd说明文档》中对账户设置的介绍，因此不再提供具体示例。</p>
+			<p>当更新完成后，kiftd将会在运行时自动更新账户配置内容，并立即生效。</p>
+			
+			<hr class="featurette-divider">
+			
+			<h1 id="t5">5. 修改kiftd服务器设置项</h1>
+			<h3 id="t5_1">5.1. 通过修改配置文件进行服务器配置</h3>
+			<p>
+				该操作的过程与<a href="#t4_1">4.1. 通过修改配置文件进行账户配置</a>章中提到的方法完全相同，区别仅在于：存储服务器配置的文件名称为<code>server.properties</code>。
+				该文件内的具体配置内容请参阅《kiftd说明文档》中的“服务器设置”一章内“直接修改配置文件”一节的内容。
+			</p>
+			<p>特别提示：修改服务器配置文件 <strong>必须重启kiftd后生效</strong> ，仅重启kiftd服务器引擎无法完成更新。因此，当kiftd服务器配置更新后，您必须结束kiftd原进程并重新开启它以令新配置生效。</p>
+			
+			<hr class="featurette-divider">
+			
+			</div>
+
+			<!-- FOOTER -->
+			<footer>
+				<p class="pull-right">
+					<a href="#">返回顶部</a>
+					<a href="index.html">返回首页</a>
+				</p>
+				<p>&copy; 2018-2020 kohgylw@163.com, 青阳龙野 版权所有。
+				</p>
+
+		</div>
+		<!-- /.container -->
+
+	</body>
+	<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+	<script src="js/jquery-1.12.4.min.js"></script>
+	<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+	<script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/holder.min.js"></script>
+	<script type="text/javascript" src="js/jqthumb.min.js"></script>
+
+</html>
